@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+        <h1 class="text-2xl font-bold mb-4 text-center">YouTube Downloader</h1>
+        <form id="downloadForm" class="space-y-4">
+            <input
+                type="url"
+                id="videoUrl"
+                name="url"
+                class="w-full p-2 border border-gray-300 rounded"
+                placeholder="Enter YouTube URL"
+                required
+            />
+            <button
+                type="submit"
+                class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            >
+                Download
+            </button>
+        </form>
+        <video id="videoPlayer" controls class="w-full mt-4 rounded shadow" autoplay>
+            <source src="" id="videoSource">
+            Your browser does not support the video tag.
+        </video>
+        <p id="message" class="text-center mt-4 text-gray-700"></p>
+    </div>
+    <script>
+        const form = document.getElementById('downloadForm');
+        const message = document.getElementById('message');
+        const videoSource = document.getElementById('videoSource');
+        const videoPlayer = document.getElementById('videoPlayer');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('videoUrl').value;
+
+            try {
+                const response = await fetch(`/info?url=${url}`);
+                const data = await response.json();
+                console.log(data);
+
+                // Assuming `data.formats[37].url` contains the video file URL
+                videoSource.src = data.video.map(element => {
+                    return element.format_note==='1080p';
+                })[0].url;
+                message.textContent = 'Video ready to play.';
+                videoPlayer.load();  // Load the new source
+                videoPlayer.play();  // Automatically play the video
+            } catch (error) {
+                message.textContent = 'Error: Unable to connect to the server.';
+            }
+        });
+    </script>
+</body>
+</html>
