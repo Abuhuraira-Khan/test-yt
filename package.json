@@ -12,7 +12,6 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.2",
-    "yt-dlp-wrap": "^2.3.12",
-    "ytdl-core": "^4.11.5"
+    "ytdlp-nodejs": "^0.1.5"
   }
 }
