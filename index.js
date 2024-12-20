@@ -1,21 +1,25 @@
-const express = require('express')
-const ytdlp = require('ytdlp-nodejs')
-const path = require('path')
-// const url = "https://www.youtube.com/watch?v=Qzc_aX8c8g4";
+const express = require('express');
+const path = require('path');
+const ytdl = require('ytdl-core');
 
-const app = express()
-const port = 3000
+const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/info', async (req, res) => {// download video
-  const url = req.query.url
-  const getInfo = ytdlp.thumbnail(url);
-  const info = await getInfo;
-  console.log(info)
-  res.json(info)
+app.get('/info', async (req, res) => {
+  const url = req.query.url;
+
+  try {
+    const info = await ytdl.getBasicInfo(url);
+    console.log(info);
+    res.json(info);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching video information' });
+  }
+
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});
